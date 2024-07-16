@@ -7,7 +7,7 @@ import LoginAnimetion from '../../public/animetion/LoginAnimation.json'
 
 import "./Home.css";
 
-const HomePage = () => {
+const LoginPage = () => {
   // useState for email input
   const [email, upemail] = useState("");
   const [emailEror, upemailEror] = useState("");
@@ -113,10 +113,21 @@ const HomePage = () => {
           >
             Login
           </button>
+          <div className="w-full flex mt-10 items-center gap-3 justify-center ">
+            <div className="w-40 h-[2px] bg-white  "></div>
+            <div className=""><p>Or</p></div>
+            <div className="w-40 h-[2px] bg-white  "></div>
+          </div>
+          <div className="w-full gap-10 justify-center mt-5 mb-12 flex">
+            <div className=" w-7 h-7 "><a href="https://accounts.google.com/v3/signin/identifier?authuser=0&continue=https%3A%2F%2Fmyaccount.google.com%2F%3Fhl%3Den%26utm_source%3DOGB%26utm_medium%3Dact&ec=GAlAwAE&hl=en&service=accountsettings&flowName=GlifWebSignIn&flowEntry=AddSession&dsh=S1108304790%3A1721147554738150&ddm=0"><img src="photos/search.png" alt="link" /></a></div>
+            <div className=" w-7 h-7 "><a href="https://web.facebook.com"><img src="photos/facebook.png" alt="link" /></a></div>
+            <div className=" w-7 h-7 "><a href="https://x.com"><img src="photos/twitter.png" alt="link" /></a></div>
+            <div className=" w-7 h-7 "><a href="https://www.icloud.com/"><img src="photos/apple-logo.png" alt="link" /></a></div>
+          </div>
           <div className="registerlink text-[15px] text-center mt-5 ">
             <p>
               Don't have an account ?{" "}
-              <a className="  " href="#">
+              <a className="  " href="/registion">
                 Register
               </a>
             </p>
@@ -128,4 +139,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LoginPage;
