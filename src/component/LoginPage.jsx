@@ -4,8 +4,9 @@ import { FaLock } from "react-icons/fa";
 import { FaUnlock } from "react-icons/fa"
 import Lottie from "lottie-react";
 import LoginAnimetion from '../../public/animetion/LoginAnimation.json'
-
 import "./Home.css";
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const LoginPage = () => {
   // useState for email input
@@ -52,6 +53,17 @@ const LoginPage = () => {
     }else{
         upemailEror('')
         uppasswordEror('')
+        toast('Login is done 😊', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          transition: Bounce,
+          });
 
     }
 
@@ -68,6 +80,7 @@ const LoginPage = () => {
 
   return (
     <>
+    <ToastContainer />
       <div className=" flex ">
         <div className=" w-[500px] gap-40 h-full ">
           <Lottie animationData={LoginAnimetion}/>

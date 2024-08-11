@@ -4,6 +4,7 @@ import './App.css'
 import NotFound from './pages/NotFound'
 import Login from './pages/Login'
 import Registion from './pages/Registion'
+import ChatingPage from './component/ChatingPage'
 
 function App() {
   const shanto = createBrowserRouter(
@@ -11,6 +12,7 @@ function App() {
       <Route>
         <Route path='/' element={<Login/>}/>
         <Route path='/registion' element={<Registion/>}/>
+        <Route path='/chating' element={<ChatingPage/>}/>
         <Route path='*' element={<NotFound/>}/>
       </Route>
     )
@@ -20,6 +22,7 @@ function App() {
   return (
     <>
     <RouterProvider router={shanto}/>
+    
      
     </>
   )
