@@ -1,172 +1,206 @@
-import React, { useState } from 'react'
-import { Bounce, ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Bounce, ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { useState } from "react";
+import { BeatLoader } from "react-spinners";
+import { useNavigate } from "react-router-dom";
 
+const RegistrationPage = () => {
+  // =========Use state for inputs
+  const [firstName, setFirstName] = useState("");
+  const [firstNameError, setFirstNameError] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [loader, setLoader] = useState(false);
+  const Navigate = useNavigate()
 
-const RegistionPage = () => {
+  // ==========Firebase setup
+  const auth = getAuth();
 
+  // =======Handlers for form fields
+  const handleFirstName = (e) => {
+    setFirstName(e.target.value);
+    setFirstNameError("");
+  };
+  
+  const handleEmail = (e) => {
+    setEmail(e.target.value);
+    setEmailError("");
+  };
+  
+  const handlePassword = (e) => {
+    setPassword(e.target.value);
+    setPasswordError("");
+  };
 
-  // =========Use state for name
-
-  const [firstName , upfirstName]             = useState('')
-  const [firstNameError , upfirstNameError]   = useState('')
-  const [lastName , uplastName]               = useState('')
-  const [lastNameError  , uplastNameError ]   = useState('')
-
-
-// ======== uses state for password
-
-  const [password , uppassword]                           = useState('')
-  const [passwordError  , uppasswordError ]               = useState('')
-  const [confirmpassword , upconfirmpassword]             = useState('')
-  const [confirmpasswordError  , upconfirmpasswordError ] = useState('')
-
-
-
-
-
-
-// =======Function for name and password
-
-  const firstnameFun       = (e)=>{
-    upfirstName(e.target.value);
-    upfirstNameError('')
-  }
-  const lastnameFun        = (e)=>{
-    uplastName(e.target.value);
-    uplastNameError('')
-  }
-  const passwordFun        = (e)=>{
-    uppassword(e.target.value);
-    uppasswordError('')
-  }
-  const confirmpasswordFun = (e)=>{
-    upconfirmpassword(e.target.value);
-    upconfirmpasswordError('')
-  }
-
-
-// =======Function for submit form
-
-  const SubForForm = (e) => {
+  // =======Submit form handler
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if(!firstName){upfirstNameError('Please enter your first name')}
-    else if(!lastName){uplastNameError('Please enter your last name')}
-    else if (!password)(uppasswordError('Please enter your password'))
-    else if(!confirmpassword)(upconfirmpasswordError('Please confirm your password'))
-    else{
-      toast('Registration completee ✅', {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
+
+    if (!firstName) {
+      setFirstNameError("Please enter your first name");
+    } else if (!email) {
+      setEmailError("Please enter your email");
+    } else if (!password) {
+      setPasswordError("Please enter your password");
+    } else {
+      setLoader(true);
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          setLoader(false);
+          toast.success('Registration successful', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+            });
+            setTimeout(() => {
+              Navigate('/')
+            }, 500);
+        })
+        .catch((error) => {
+          setLoader(false);
+          const errorCode = error.code;
+          console.log(errorCode)
+          if(errorCode == 'auth/email-already-in-use'){
+            toast.error('You already have an account', {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+              });
+          }
+          if(errorCode == 'auth/weak-password'){
+            toast.error('Use stronger password', {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+              });
+          }
+
         });
- 
-}
-  
-  
-  }
-
-
-
-
-
-
-
-
-
-
-
+    }
+  };
 
   return (
     <>
-    <ToastContainer/>
-    <div className=" flex ">
-       
-        <div className="warper font-poppins rounded-[12px] ">
-        <form onSubmit={SubForForm} >
-          <h1 className=" text-[35px] text-center font-poppins font-semibold ">
-          Register
-          </h1>
-          <div className="inputBox">
-            <input
-              onChange={firstnameFun}
-              type="text"
-          
-              placeholder="Your first name"
-            />
-          
-            
-          </div>
-          <div className="pl-5 text-[#8bcfff] text-[12px] "> <p> {firstNameError} </p> </div>
-          <div className="inputBox">
-            <input
-              onChange={lastnameFun}
-              type="text"
-          
-              placeholder="Your last name"
-            />
-          
-            
-          </div>
-          <div className="pl-5 text-[#8bcfff] text-[12px] "> <p> {lastNameError} </p> </div>
+      <ToastContainer />
+      <div className="flex">
+        <div className="warper font-poppins rounded-[12px]">
+          <form onSubmit={handleSubmit}>
+            <h1 className="text-[35px] text-center font-poppins font-semibold">
+              Register
+            </h1>
 
-          <div className="mb-8"><p className="pl-5 text-[#8bcfff] text-[12px] " >  </p></div>
-          
+            {/* First Name */}
+            <div className="inputBox">
+              <input
+                onChange={handleFirstName}
+                type="text"
+                placeholder="First Name"
+              />
+            </div>
+            <div className="pl-5 text-[#8bcfff] text-[12px]">
+              <p>{firstNameError}</p>
+            </div>
 
+            {/* Email */}
+            <div className="inputBox">
+              <input onChange={handleEmail} type="email" placeholder="Email" />
+            </div>
+            <div className="pl-5 text-[#8bcfff] text-[12px]">
+              <p>{emailError}</p>
+            </div>
 
-          <div className="inputBox">
-            <input type='password' onChange={passwordFun} placeholder="Password  " />
-            
-          </div>
-          <div className="pl-5 text-[#8bcfff] text-[12px] "> <p> {passwordError} </p> </div>
+            {/* Password */}
+            <div className="inputBox">
+              <input
+                type="password"
+                onChange={handlePassword}
+                placeholder="Password"
+              />
+            </div>
+            <div className="pl-5 text-[#8bcfff] text-[12px]">
+              <p>{passwordError}</p>
+            </div>
 
+            {/* Submit Button */}
+            {loader ? (
+              <div className="flex justify-center items-center w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] bg-white">
+                <BeatLoader />
+              </div>
+            ) : (
+              <button
+                type="submit"
+                className="w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] bg-white"
+              >
+                Sign Up
+              </button>
+            )}
 
+            {/* Divider */}
+            <div className="w-full flex mt-10 items-center gap-3 justify-center">
+              <div className="w-40 h-[2px] bg-white"></div>
+              <p>Or</p>
+              <div className="w-40 h-[2px] bg-white"></div>
+            </div>
 
-          <div className="inputBox">
-            <input type='password' onChange={confirmpasswordFun} placeholder=" Confirm password " />
-            
-          </div>
-          <div className="pl-5 text-[#8bcfff] text-[12px] "> <p> {confirmpasswordError} </p> </div>
+            {/* Social Login Options */}
+            <div className="w-full gap-10 justify-center mt-5 mb-12 flex">
+              <div className="w-7 h-7">
+                <a href="https://accounts.google.com/">
+                  <img src="photos/search.png" alt="Google" />
+                </a>
+              </div>
+              <div className="w-7 h-7">
+                <a href="https://web.facebook.com">
+                  <img src="photos/facebook.png" alt="Facebook" />
+                </a>
+              </div>
+              <div className="w-7 h-7">
+                <a href="https://x.com">
+                  <img src="photos/twitter.png" alt="Twitter" />
+                </a>
+              </div>
+              <div className="w-7 h-7">
+                <a href="https://www.icloud.com/">
+                  <img src="photos/apple-logo.png" alt="Apple" />
+                </a>
+              </div>
+            </div>
 
-          <div className="mb-8"><p className="pl-5 text-[#8bcfff] text-[12px] " >  </p></div>
-       
-          <button
-            type="submit"
-            className=" w-full h-[45px] active:scale-105 transition-all border-none outline-none shadow-md cursor-pointer text-[17px] text-[#333] font-semibold rounded-[40px] text-black bg-white "
-          >
-            Sing Up
-          </button>
-          <div className="w-full flex mt-10 items-center gap-3 justify-center ">
-            <div className="w-40 h-[2px] bg-white  "></div>
-            <div className=""><p>Or</p></div>
-            <div className="w-40 h-[2px] bg-white  "></div>
-          </div>
-          <div className="w-full gap-10 justify-center mt-5 mb-12 flex">
-            <div className=" w-7 h-7 "><a href="https://accounts.google.com/v3/signin/identifier?authuser=0&continue=https%3A%2F%2Fmyaccount.google.com%2F%3Fhl%3Den%26utm_source%3DOGB%26utm_medium%3Dact&ec=GAlAwAE&hl=en&service=accountsettings&flowName=GlifWebSignIn&flowEntry=AddSession&dsh=S1108304790%3A1721147554738150&ddm=0"><img src="photos/search.png" alt="link" /></a></div>
-            <div className=" w-7 h-7 "><a href="https://web.facebook.com"><img src="photos/facebook.png" alt="link" /></a></div>
-            <div className=" w-7 h-7 "><a href="https://x.com"><img src="photos/twitter.png" alt="link" /></a></div>
-            <div className=" w-7 h-7 "><a href="https://www.icloud.com/"><img src="photos/apple-logo.png" alt="link" /></a></div>
-          </div>
-          <div className="registerlink text-[15px] text-center mt-5 ">
-            <p>
-              Already have an account ?{" "}
-              <a className="  " href="/">
-                Login 
-              </a>
-            </p>
-          </div>
-        </form>
+            {/* Already Have Account */}
+            <div className="registerlink text-[15px] text-center mt-5">
+              <p>
+                Already have an account?{" "}
+                <a href="/" className="">
+                  Login
+                </a>
+              </p>
+            </div>
+          </form>
+        </div>
       </div>
-      </div>
-      
     </>
-  )
-}
+  );
+};
 
-export default RegistionPage
+export default RegistrationPage;
