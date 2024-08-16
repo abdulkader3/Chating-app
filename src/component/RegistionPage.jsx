@@ -61,9 +61,7 @@ const RegistrationPage = () => {
             theme: "light",
             transition: Bounce,
             });
-            setTimeout(() => {
-              Navigate('/')
-            }, 500);
+            Navigate('/')
         })
         .catch((error) => {
           setLoader(false);
