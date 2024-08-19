@@ -1,6 +1,6 @@
-import { Bounce, ToastContainer, toast } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from "firebase/auth";
 import { useState } from "react";
 import { BeatLoader } from "react-spinners";
 import { useNavigate } from "react-router-dom";
@@ -46,9 +46,13 @@ const RegistrationPage = () => {
     } else if (!password) {
       setPasswordError("Please enter your password");
     } else {
+       // Button icons
       setLoader(true);
+
+      // Email password auth from firebase
       createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
+          // Button icons
           setLoader(false);
           toast.success('Registration successful', {
             position: "top-right",
@@ -61,13 +65,43 @@ const RegistrationPage = () => {
             theme: "light",
             transition: Bounce,
             });
+
+
+            // Navigate user to the login page
             Navigate('/')
+
+            // console user credit share just in case
+            console.log(userCredential)
+
+            // updete user profile
+            updateProfile(auth.currentUser, {
+              displayName: firstName ,
+              photoURL: "https://play-lh.googleusercontent.com/7oW_TFaC5yllHJK8nhxHLQRCvGDE8jYIAc2SWljYpR6hQlFTkbA6lNvER1ZK-doQnQ=w240-h480-rw"
+            })
+
+
+            sendEmailVerification(auth.currentUser)
+            .then(() => {
+             // Email verification sent!
+             // ...
+           });
+          
         })
+        // Catch all the errors
         .catch((error) => {
+
+          // Icons in the button
           setLoader(false);
+
+          // Error error
           const errorCode = error.code;
+
+          // console error
           console.log(errorCode)
           if(errorCode == 'auth/email-already-in-use'){
+
+
+            // Toast container If or count already exists
             toast.error('You already have an account', {
               position: "top-right",
               autoClose: 5000,
@@ -80,6 +114,8 @@ const RegistrationPage = () => {
               transition: Bounce,
               });
           }
+
+          // If password is less than six characters
           if(errorCode == 'auth/weak-password'){
             toast.error('Use stronger password', {
               position: "top-right",
@@ -100,7 +136,7 @@ const RegistrationPage = () => {
 
   return (
     <>
-      <ToastContainer />
+      
       <div className="flex">
         <div className="warper font-poppins rounded-[12px]">
           <form onSubmit={handleSubmit}>

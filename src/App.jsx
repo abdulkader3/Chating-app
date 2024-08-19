@@ -6,6 +6,7 @@ import Login from './pages/Login'
 import Registion from './pages/Registion'
 import ChatingPage from './component/ChatingPage'
 import database from './firebase.config'
+import { ToastContainer } from 'react-toastify'
 
 function App() {
   const shanto = createBrowserRouter(
@@ -22,6 +23,7 @@ function App() {
 
   return (
     <>
+    <ToastContainer />
     <RouterProvider router={shanto}/>
     
      
