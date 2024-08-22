@@ -7,7 +7,7 @@ import LoginAnimetion from "../../public/animetion/LoginAnimation.json";
 import "./Home.css";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { getAuth , signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
 const LoginPage = () => {
   // useState for email input
@@ -49,28 +49,63 @@ const LoginPage = () => {
     } else {
       upemailEror("");
       uppasswordEror("");
-      toast("Login is Successful", {
-        position: "bottom-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-        transition: Bounce,
-      });
 
       // User sign in firebase
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           // Signed in
           const user = userCredential.user;
+          console.log(user);
           // ...
+
+          
+          if( user.emailVerified == false){
+            toast.error('Your email is not verified', {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+              });
+          }
+          else{
+
+            toast.success("Login successful", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+
+          }
         })
+
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
+          console.log(errorCode);
+          if (errorCode == "auth/invalid-credential") {
+            toast.error("Password is incorrect", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            });
+          }
         });
     }
   };
@@ -122,7 +157,7 @@ const LoginPage = () => {
                 <input type="checkbox" />
                 Remember me{" "}
               </label>
-              <a href="#"> forgot password ? </a>
+              <a href="/forgetPassword"> forgot password ? </a>
             </div>
             <button
               type="submit"
