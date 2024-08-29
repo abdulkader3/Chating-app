@@ -8,12 +8,14 @@ import ChatingPage from './component/ChatingPage'
 import database from './firebase.config'
 import { ToastContainer } from 'react-toastify'
 import ForgetPassword from './pages/ForgetPassword'
+import Profile from './component/Profile'
 
 function App() {
   const shanto = createBrowserRouter(
     createRoutesFromElements(
       <Route>
         <Route path='/' element={<Login/>}/>
+        <Route path='/profile' element={<Profile/>}/>
         <Route path='/registion' element={<Registion/>}/>
         <Route path='/forgetPassword' element={<ForgetPassword/>}/>
         <Route path='/chating' element={<ChatingPage/>}/>

@@ -8,11 +8,16 @@ import "./Home.css";
 import { Bounce, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { UserLoginData } from "../Slices/Redux";
 
 const LoginPage = () => {
   // useState for email input
   const [email, upemail] = useState("");
   const [emailEror, upemailEror] = useState("");
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
 
   // auth form firebase
   const auth = getAuth();
@@ -85,6 +90,10 @@ const LoginPage = () => {
             theme: "light",
             transition: Bounce,
           });
+
+          navigate('/profile')
+          dispatch(UserLoginData(user))
+
 
           }
         })
